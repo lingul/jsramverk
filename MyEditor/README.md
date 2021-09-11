@@ -68,3 +68,45 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+render() {
+        return (
+            <div>
+                <CKEditor
+                    data={this.state.data}
+                    onChange={this.onEditorChange} />
+                    <button onClick={this.handleClick}>
+                        Spara
+                    </button>
+            </div>
+        );
+    }
+
+
+    <select onChange={this.onSelect}>
+                        <option value="Orange">Orange</option>
+                        <option value="Radish">Radish</option>
+                        <option value="Cherry">Cherry</option>
+                    </select>
+
+
+                    <div>
+                <CKEditor
+                    //data={this.state.data}
+                    onChange={this.onEditorChange} />
+                    <input type="text" onChange={this.changeTitle}/>
+                    <button onClick={this.handleClick}>
+                        Spara
+                    </button>
+            </div>
+
+            let returnres;
+        const client = await mongo.connect(dsn);
+        const db = await client.db();
+        const col = await db.collection(colName);
+        await col.find({}, { projection: { _id: 0, filename: 1} }).toArray(async function(err, result) {
+            if (err) throw err;
+            await client.close();
+            return result;
+        });
+    }
