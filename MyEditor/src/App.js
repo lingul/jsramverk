@@ -8,31 +8,25 @@ import queryString from 'query-string'; // import the queryString class
 class TwoWayBinding extends Component {
     constructor( props ) {
         super( props );
-        var jsonFileNames = {};
         this.state = {
             data: '',
             name: 'default.txt',
-            dropvalue: ''
+            fileId: 'nothing',
+            files: [],
+            oldData: []
         };
+        this.getApiFiles();
     }
     
 
     onEditorChange = ( evt ) => {
         this.setState({data: evt.editor.getData()});
     }
-    //array.forEach(item => console.log(item));
-    //
+ 
     getApiFiles() {
-        const [fileNames, updateNames] = React.useState([]);
-
-        React.useEffect(function effectFunction() {
-            fetch('http://localhost:1337/getdocs', { method: 'GET' })
-                .then(data => data.json()) // Parsing the data into a JavaScript object
-                .then(({ data: fileNames }) => {
-                    updateNames(fileNames);
-                });
-        }, []);
-        fileNames.map(fileName => (console.log(fileName.filename)));
+        fetch('http://localhost:1337/getdocs', { method: 'GET' })
+            .then(data => data.json()) // Parsing the data into a JavaScript object
+            .then(json => this.setState({files: json.mess})); // Displaying the stringified data in an alert popup
     }
 
     postApi() {
@@ -43,16 +37,33 @@ class TwoWayBinding extends Component {
         });
     }
 
+    async getApiFileData(idToData) {
+        let myURL = 'http://localhost:1337/getdata?id=' + idToData;
+        await fetch(myURL, { method: 'GET' })
+            .then(data => data.json()) // Parsing the data into a JavaScript object
+            .then(json => this.setState({oldData: json.mess}));
+        }
+
+    async setFileAndData(e) {
+        await this.getApiFileData(e);
+        {this.state.oldData.map((f) => (
+            this.setState({data: f.data}),
+            this.setState({name: f.filename})
+            )) 
+        }
+    }
+
     onSelect = (e) => {
-        //console.log(e.target.value);
+        console.log(e.target.value);
+        this.setState({fileId: e.target.value});
+        this.setFileAndData(e.target.value);
         this.getApiFiles();
-        console.log(this.jsonFileNames);
-        this.setState({dropvalue: e.target.value});
+        this.render();
     }
     
     handleClick = () => {
         this.postApi();
-        console.log(this.state.dropvalue);
+        //console.log(this.state.fileId);
         //console.log(this.state.data.replace(/(<([^>]+)>)/gi, ""));
         //console.log(this.state.selectValue);
     }
@@ -65,16 +76,19 @@ class TwoWayBinding extends Component {
         return (
             <div>
                 <CKEditor
-                    //data={this.state.data}
+                    data={this.state.data}
                     onChange={this.onEditorChange} />
-                    <input type="text" onChange={this.changeTitle}/>
+                    <input type="text" value={this.state.name} onChange={this.changeTitle}/>
                     <button onClick={this.handleClick}>
                         Spara
                     </button>
                     <select onChange={this.onSelect}>
-                        <option value="Orange">Orange</option>
-                        <option value="Radish">Radish</option>
-                        <option value="Cherry">Cherry</option>
+                    {this.state.files.map((f) => (
+                        <option value={f._id}
+                        >{f.filename}
+                        </option>
+                        )) 
+                    }
                     </select>
             </div>
         );
