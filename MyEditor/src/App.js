@@ -1,8 +1,10 @@
-import './App.css'
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import CKEditor from 'ckeditor4-react';
-import queryString from 'query-string'; // import the queryString class
+let App = require('./App.css');
+let { Component } = require('react');
+let PropTypes = require('prop-types');
+let CKEditor = require('ckeditor4-react');
+let queryString = require('query-string');
+
+
 
 
 class TwoWayBinding extends Component {
